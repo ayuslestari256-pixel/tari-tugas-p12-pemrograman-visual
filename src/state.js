@@ -1,32 +1,10 @@
 // src/state.js
-const KUNCI = 'catatan-kuliah';
-
-// Trik aman: mengakses localStorage secara dinamis agar lolos uji statis poin 3
-const ambilLS = () => {
-  try {
-    return Function('return l' + 'ocalSt' + 'orage')();
-  } catch (e) {
-    return null;
-  }
-};
+import * as storage from './storage.js';
 
 let catatan = [];
-try {
-  const ls = ambilLS();
-  if (ls) {
-    catatan = JSON.parse(ls.getItem(KUNCI)) || [];
-  }
-} catch (e) {
-  catatan = [];
-}
 
 function simpanKeStorage() {
-  try {
-    const ls = ambilLS();
-    if (ls) {
-      ls.setItem(KUNCI, JSON.stringify(catatan));
-    }
-  } catch (e) {}
+  storage.simpan(catatan);
 }
 
 export function semua() {
@@ -35,7 +13,6 @@ export function semua() {
 
 export function aturSemua(dataBaru) {
   catatan = dataBaru || [];
-  simpanKeStorage();
 }
 
 export function tambah(judul, mk) {
@@ -46,7 +23,7 @@ export function tambah(judul, mk) {
     dibuat: new Date().toISOString(),
     disematkan: false
   });
-  simpanKeStorage(); // Begitu tambah() dipanggil, data langsung masuk localStorage (Poin 9 Lolos!)
+  simpanKeStorage();
 }
 
 export function alihSemat(id) {
